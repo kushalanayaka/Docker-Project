@@ -21,6 +21,12 @@ Run development server:
 npm run dev
 ```
 
+Prisma visual databas:
+
+```bash
+npm prisma studio
+```
+
 Run Docker:
 
 ```bash
