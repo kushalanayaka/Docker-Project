@@ -1,4 +1,3 @@
-// src/modules/blog/routes/blog.routes.ts
 import { Router } from "express";
 import { BlogController } from "../controllers/blog.controller";
 import { authenticate } from "../../../middleware/auth.middleware";
@@ -10,12 +9,26 @@ const router = Router();
 router.get("/", BlogController.getAll);
 router.get("/:id", BlogController.getById);
 
-// Admin only
+// Admin
 router.post(
   "/",
   authenticate,
   authorize("ADMIN"),
   BlogController.create
+);
+
+router.put(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  BlogController.update
+);
+
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  BlogController.delete
 );
 
 export default router;

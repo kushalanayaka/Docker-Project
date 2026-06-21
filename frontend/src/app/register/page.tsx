@@ -1,5 +1,5 @@
 "use client";
-
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { registerUser } from "../../services/auth.service";
 import { useRouter } from "next/navigation";
@@ -31,13 +31,13 @@ export default function RegisterPage() {
         data.token
       );
 
-      alert("Registration successful!");
+      toast.success("Account created successfully");
 
       router.push("/");
 
     } catch (error) {
       console.error(error);
-      alert("Registration failed");
+      toast.error("Registration failed");
     }
   };
 

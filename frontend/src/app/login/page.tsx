@@ -1,5 +1,5 @@
 "use client";
-
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { loginUser } from "../../services/auth.service";
 import { useRouter } from "next/navigation";
@@ -30,13 +30,13 @@ export default function LoginPage() {
         data.token
       );
 
-      alert("Login successful!");
+      toast.success("Login successful");
 
       router.push("/");
 
     } catch (error) {
       console.error(error);
-      alert("Login failed");
+      toast.error("Invalid credentials");
     }
   };
 
@@ -73,10 +73,20 @@ export default function LoginPage() {
           >
             Login
           </button>
-
+          <p className="mt-4 text-white/60">
+  Don't have an account?{" "}
+  <a
+    href="/register"
+    className="text-white underline"
+  >
+    Create one
+  </a>
+</p>
+          
         </div>
 
       </div>
+      
 
     </main>
   );

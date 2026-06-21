@@ -1,25 +1,47 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isAdmin } from "../../lib/auth";
 
-interface Props {
-  children: React.ReactNode;
-}
-
 export default function ProtectedAdminRoute({
   children,
-}: Props) {
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
 
+  const [loading, setLoading] =
+    useState(true);
+
+  const [authorized, setAuthorized] =
+    useState(false);
+
   useEffect(() => {
-    if (!isAdmin()) {
-      router.push("/login");
-    }
+    const checkAuth = () => {
+      try {
+        if (isAdmin()) {
+          setAuthorized(true);
+        } else {
+          router.replace("/login");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
   }, [router]);
 
-  if (!isAdmin()) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center text-white">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!authorized) {
     return null;
   }
 

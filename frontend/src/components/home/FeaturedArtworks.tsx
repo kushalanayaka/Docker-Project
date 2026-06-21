@@ -4,22 +4,30 @@ import { useEffect, useState } from "react";
 import { getProducts } from "../../services/product.service";
 import { Product } from "../../types/product";
 import ProductCard from "../products/ProductCard";
+import ProductCardSkeleton from "../products/ProductCardSkeleton";
 
 export default function FeaturedArtworks() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await getProducts();
-        setProducts(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const fetchProducts = async () => {
+    try {
+      const data = await getProducts();
 
-    fetchProducts();
-  }, []);
+      setProducts(data);
+
+      setLoading(false);
+
+    } catch (error) {
+      console.error(error);
+
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, []);
 
   return (
     <section className="py-24 px-6 bg-black text-white">
@@ -37,13 +45,23 @@ export default function FeaturedArtworks() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-            />
-          ))}
-        </div>
+
+  {loading ? (
+    <>
+      <ProductCardSkeleton />
+      <ProductCardSkeleton />
+      <ProductCardSkeleton />
+    </>
+  ) : (
+    products.map((product) => (
+      <ProductCard
+        key={product.id}
+        product={product}
+      />
+    ))
+  )}
+
+</div>
 
       </div>
     </section>

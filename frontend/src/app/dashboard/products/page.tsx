@@ -1,4 +1,5 @@
 "use client";
+import EmptyState from "../../../components/ui/EmptyState";
 
 import { useEffect, useState } from "react";
 import { Product } from "../../../types/product";
@@ -75,6 +76,13 @@ export default function DashboardProductsPage() {
         </div>
 
       </div>
+      <EmptyState
+  icon="🎨"
+  title="No Artworks Yet"
+  description="Create your first artwork to start building your gallery."
+  actionText="Create Artwork"
+  actionLink="/dashboard/products/create"
+/>
 
     </main>
   );

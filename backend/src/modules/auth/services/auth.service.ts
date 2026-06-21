@@ -1,60 +1,95 @@
 // src/modules/auth/services/auth.service.ts
+
 import { prisma } from "../../../prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export class AuthService {
-  static async register(name: string, email: string, password: string) {
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+  static async register(
+    name: string,
+    email: string,
+    password: string
+  ) {
+    const existingUser =
+      await prisma.user.findUnique({
+        where: { email },
+      });
 
     if (existingUser) {
-      throw new Error("User already exists");
+      throw new Error(
+        "User already exists"
+      );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword =
+      await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
-    });
+    const user =
+      await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+        },
+      });
 
-    return user;
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
   }
 
-  static async login(email: string, password: string) {
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+  static async login(
+    email: string,
+    password: string
+  ) {
+    const user =
+      await prisma.user.findUnique({
+        where: { email },
+      });
 
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new Error(
+        "Invalid credentials"
+      );
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch =
+      await bcrypt.compare(
+        password,
+        user.password
+      );
 
     if (!isMatch) {
-      throw new Error("Invalid credentials");
+      throw new Error(
+        "Invalid credentials"
+      );
     }
 
     const token = jwt.sign(
-      { userId: user.id, role: user.role },
+      {
+        userId: user.id,
+        role: user.role,
+      },
       process.env.JWT_SECRET as string,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      {
+        expiresIn:
+          process.env.JWT_EXPIRES_IN ||
+          "7d",
+      }
     );
 
     return {
-  token,
-  user: {
-    id: user.id,
-    email: user.email,
-    role: user.role,
-    name: user.name,
-  },
-};
+      token,
+
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    };
   }
 }

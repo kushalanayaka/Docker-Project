@@ -36,6 +36,8 @@ export default function HeroSection() {
           Explore Gallery
         </motion.button>
       </div>
+      
     </section>
+    
   );
 }

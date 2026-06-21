@@ -1,4 +1,5 @@
 // src/modules/order/services/order.service.ts
+
 import { prisma } from "../../../prisma/client";
 import { transporter } from "../../../utils/mail";
 
@@ -11,7 +12,6 @@ export class OrderService {
       },
     });
 
-    // Send email to artist
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.ARTIST_EMAIL,
@@ -41,6 +41,34 @@ export class OrderService {
       },
       orderBy: {
         createdAt: "desc",
+      },
+    });
+  }
+
+  static async getById(id: string) {
+    return prisma.order.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        product: true,
+      },
+    });
+  }
+
+  static async updateStatus(
+  id: string,
+  status: any
+) {
+    return prisma.order.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
+      },
+      include: {
+        product: true,
       },
     });
   }
